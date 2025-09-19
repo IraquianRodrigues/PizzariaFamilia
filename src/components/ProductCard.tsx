@@ -102,14 +102,14 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                 {/* Espaço reservado removido das avaliações */}
 
                 {/* Preço e botões */}
-                <div className="flex items-center justify-between">
-                    <div className="text-center">
-                        <p className="font-bold text-2xl sm:text-xl text-green-600">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="text-left">
+                        <p className="font-bold text-xl sm:text-2xl text-green-600">
                             {formatBRL(product.price)}
                         </p>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap sm:flex-nowrap">
                         {/* Botão de Personalização (apenas para pizzas) */}
                         {product.category === 'pizza' && onCustomizeClick && (
                             <Button
@@ -117,7 +117,7 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                                 onClick={handleCustomizeClick}
                                 variant="outline"
                                 size="sm"
-                                className="border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 transition-colors text-xs px-3 py-1.5"
+                                className="border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 transition-colors text-[11px] px-2.5 sm:text-xs sm:px-3 py-1.5 whitespace-nowrap"
                             >
                                 <Settings className="w-3.5 h-3.5 mr-1.5" />
                                 Personalizar
@@ -128,7 +128,7 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                         <Button
                             aria-label={`Adicionar ${product.name} ao carrinho`}
                             onClick={handleAddToCart}
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 text-xs px-3 py-1.5"
+                            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 text-xs px-3 py-1.5 whitespace-nowrap"
                             size="sm"
                         >
                             <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
