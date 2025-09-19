@@ -11,8 +11,6 @@ Aplicação web de cardápio digital para pizzaria e lanchonete, com carrinho, c
 - Pagamento via PIX com cópia rápida da chave e identificação do recebedor.
 - Ícones e favicon gerados a partir da logo.
 
-## Screenshots
-Coloque aqui prints do fluxo principal (Home, Carrinho – Entrega, Carrinho – Retirada).
 
 ## Stack
 - Next.js 15 (App Router)
@@ -27,12 +25,6 @@ Coloque aqui prints do fluxo principal (Home, Carrinho – Entrega, Carrinho –
 1. Instale dependências:
 ```powershell
 npm install
-```
-2. Configure variáveis de ambiente em `.env` na raiz do app:
-```properties
-NEXT_PUBLIC_PIX_KEY=84999479924
-NEXT_PUBLIC_PIX_NAME=Francisco Gildazio
-NEXT_PUBLIC_WHATSAPP_PHONE=5584998169843
 ```
 3. Inicie em desenvolvimento:
 ```powershell
