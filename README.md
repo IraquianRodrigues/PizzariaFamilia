@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pizzaria Família — Cardápio Digital
 
-## Getting Started
+Aplicação web de cardápio digital para pizzaria e lanchonete, com carrinho, cálculo de taxa por bairro, checkout via WhatsApp e pagamento PIX. Construída com Next.js (App Router), React e Tailwind CSS.
 
-First, run the development server:
+## Visão Geral
+- Catálogo de produtos (pizzas, lanches, bebidas) com preços e variações.
+- Carrinho com ajustes de quantidade e subtotal por item.
+- Seleção de tipo de entrega: Entrega ou Retirada (endereço exibido apenas em Entrega).
+- Cálculo de taxa por bairro e total dinâmico.
+- Checkout com mensagem formatada para WhatsApp (link `wa.me`).
+- Pagamento via PIX com cópia rápida da chave e identificação do recebedor.
+- Ícones e favicon gerados a partir da logo.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Screenshots
+Coloque aqui prints do fluxo principal (Home, Carrinho – Entrega, Carrinho – Retirada).
+
+## Stack
+- Next.js 15 (App Router)
+- React 19 + TypeScript
+- Tailwind CSS + Radix UI
+- Lucide Icons
+
+## Requisitos
+- Node.js 18+ (recomendado 20+)
+
+## Primeiros Passos
+1. Instale dependências:
+```powershell
+npm install
 ```
+2. Configure variáveis de ambiente em `.env` na raiz do app:
+```properties
+NEXT_PUBLIC_PIX_KEY=84999479924
+NEXT_PUBLIC_PIX_NAME=Francisco Gildazio
+NEXT_PUBLIC_WHATSAPP_PHONE=5584998169843
+```
+3. Inicie em desenvolvimento:
+```powershell
+npm run dev
+```
+4. Acesse http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
+- `npm run dev`: Ambiente de desenvolvimento
+- `npm run build`: Build de produção
+- `npm run start`: Servir build
+- `npm run gen:favicon`: Gerar favicon e ícones a partir da logo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estrutura de Pastas (resumo)
+- `src/app`: App Router (layout, páginas e API routes)
+- `src/components`: Componentes (CartModal, ProductCard, UI)
+- `src/data`: Produtos e pizzas
+- `public/assets`: Imagens públicas (logo, itens do cardápio)
+- `scripts/generate-favicon.mjs`: Gerador de `favicon.ico` e ícones
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Configurações Importantes
+- PIX
+	- A chave exibida na UI é lida de `NEXT_PUBLIC_PIX_KEY`.
+	- O nome do recebedor aparece logo abaixo da chave e vem de `NEXT_PUBLIC_PIX_NAME`.
+- WhatsApp
+	- O número usado para os links `wa.me` vem de `NEXT_PUBLIC_WHATSAPP_PHONE` (formato E.164 sem `+`, ex.: `5584998169843`).
+- Tipo de Entrega
+	- `Entrega`: exige endereço + bairro; inclui taxa no total.
+	- `Retirada`: não exibe a seção de endereço e zera a taxa.
 
-## Learn More
+## Personalização Rápida
+- Cores e tipografia: edite `tailwind.config.js` e `src/app/globals.css`.
+- Bairros e taxas: em `src/components/CartModal.tsx` (array `neighborhoods`).
+- Produtos: em `src/data/products.ts` e `src/data/pizzas.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy
+1. Crie o build:
+```powershell
+npm run build
+```
+2. Publique os arquivos gerados pelo Next (`.next/`) com seu provedor (Vercel recomendado) e configure as mesmas variáveis de ambiente no painel do provedor.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Boas Práticas e Notas
+- As variáveis expostas no cliente devem usar o prefixo `NEXT_PUBLIC_`.
+- Reinicie o servidor de desenvolvimento após alterar `.env`.
+- Para gerar o favicon a partir da logo, coloque a logo em `public/assets/logo nova.png` (ou `logo.png/.jpeg`) e rode `npm run gen:favicon`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Créditos
+Desenvolvido com ❤️ por Iraquian Rodrigues.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
