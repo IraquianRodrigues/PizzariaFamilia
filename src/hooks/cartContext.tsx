@@ -1,10 +1,10 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { CartItem } from '../types';
+import { CartItem, Customization } from '../types';
 
 export interface CartStats { totalItems: number; totalPrice: number; averagePrice: number; mostExpensiveItem: CartItem | null; cheapestItem: CartItem | null; }
 export interface CartHistory { id: string; date: string; items: CartItem[]; total: number; status: 'completed' | 'cancelled'; }
-interface CartContextValue { cart: CartItem[]; cartHistory: CartHistory[]; addToCart: (name: string, price: number, customizations?: any[]) => void; removeFromCart: (name: string) => void; updateQuantity: (name: string, quantity: number) => void; clearCart: () => void; checkout: () => void; cancelOrder: (orderId: string) => void; reorder: (orderId: string) => void; getCartTotal: () => number; getCartCount: () => number; getCartStats: () => CartStats; getSuggestions: () => string[]; isCartEmpty: () => boolean; getCartItems: () => CartItem[]; }
+interface CartContextValue { cart: CartItem[]; cartHistory: CartHistory[]; addToCart: (name: string, price: number, customizations?: Customization[]) => void; removeFromCart: (name: string) => void; updateQuantity: (name: string, quantity: number) => void; clearCart: () => void; checkout: () => void; cancelOrder: (orderId: string) => void; reorder: (orderId: string) => void; getCartTotal: () => number; getCartCount: () => number; getCartStats: () => CartStats; getSuggestions: () => string[]; isCartEmpty: () => boolean; getCartItems: () => CartItem[]; }
 const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -12,7 +12,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => { const savedCart = localStorage.getItem('pizzariaFamiliaCart'); const savedHistory = localStorage.getItem('pizzariaFamiliaCartHistory'); if (savedCart) setCart(JSON.parse(savedCart)); if (savedHistory) setCartHistory(JSON.parse(savedHistory)); }, []);
   const saveCartToStorage = useCallback((c: CartItem[]) => { localStorage.setItem('pizzariaFamiliaCart', JSON.stringify(c)); }, []);
   const saveHistoryToStorage = useCallback((h: CartHistory[]) => { localStorage.setItem('pizzariaFamiliaCartHistory', JSON.stringify(h)); }, []);
-  const addToCart = useCallback((name: string, price: number, customizations?: any[]) => { setCart(prev => { const existing = prev.find(i => i.name === name); if (existing) { const updated = prev.map(i => i.name === name ? { ...i, quantity: i.quantity + 1, totalPrice: (i.quantity + 1) * i.price } : i); saveCartToStorage(updated); return updated; } const updated = [...prev, { name, price, quantity: 1, totalPrice: price, customizations: customizations || [] }]; saveCartToStorage(updated); return updated; }); }, [saveCartToStorage]);
+  const addToCart = useCallback((name: string, price: number, customizations?: Customization[]) => { setCart(prev => { const existing = prev.find(i => i.name === name); if (existing) { const updated = prev.map(i => i.name === name ? { ...i, quantity: i.quantity + 1, totalPrice: (i.quantity + 1) * i.price } : i); saveCartToStorage(updated); return updated; } const updated = [...prev, { name, price, quantity: 1, totalPrice: price, customizations: customizations || [] }]; saveCartToStorage(updated); return updated; }); }, [saveCartToStorage]);
   const removeFromCart = useCallback((name: string) => { setCart(prev => { const updated = prev.filter(i => i.name !== name); saveCartToStorage(updated); return updated; }); }, [saveCartToStorage]);
   const updateQuantity = useCallback((name: string, quantity: number) => { if (quantity <= 0) return removeFromCart(name); setCart(prev => { const updated = prev.map(i => i.name === name ? { ...i, quantity, totalPrice: quantity * i.price } : i); saveCartToStorage(updated); return updated; }); }, [removeFromCart, saveCartToStorage]);
   const clearCart = useCallback(() => { setCart([]); localStorage.removeItem('pizzariaFamiliaCart'); }, []);

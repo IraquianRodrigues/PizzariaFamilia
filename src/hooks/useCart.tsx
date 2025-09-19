@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { CartItem } from '../types';
+import { CartItem, Customization } from '../types';
 
 export interface CartStats {
     totalItems: number;
@@ -22,7 +22,7 @@ export interface CartHistory {
 interface CartContextValue {
     cart: CartItem[];
     cartHistory: CartHistory[];
-    addToCart: (name: string, price: number, customizations?: any[]) => void;
+    addToCart: (name: string, price: number, customizations?: Customization[]) => void;
     removeFromCart: (name: string) => void;
     updateQuantity: (name: string, quantity: number) => void;
     clearCart: () => void;
@@ -58,7 +58,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('pizzariaFamiliaCartHistory', JSON.stringify(newHistory));
     }, []);
 
-    const addToCart = useCallback((name: string, price: number, customizations?: any[]) => {
+    const addToCart = useCallback((name: string, price: number, customizations?: Customization[]) => {
         setCart(prev => {
             const existing = prev.find(i => i.name === name);
             if (existing) {

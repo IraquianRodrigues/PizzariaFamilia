@@ -102,35 +102,5 @@ export const products: Product[] = [
 ];
 
 export const coupons = {
-    'BURGER10': {
-        name: 'BURGER10',
-        discount: 10,
-        type: 'percentage' as const,
-        category: 'burgers' as const,
-        description: '10% de desconto em hambúrgueres'
-    },
-    'DRINK15': {
-        name: 'DRINK15',
-        discount: 15,
-        type: 'percentage' as const,
-        category: 'drinks' as const,
-        description: '15% de desconto em bebidas'
-    },
-    'PRIMEIRA10': {
-        name: 'PRIMEIRA10',
-        discount: 10,
-        type: 'percentage' as const,
-        category: 'all' as const,
-        description: '10% de desconto na primeira compra',
-        oneTime: true
-    },
-    'PROMO20': {
-        name: 'PROMO20',
-        discount: 20,
-        type: 'percentage' as const,
-        category: 'all' as const,
-        description: '20% de desconto em pedidos acima de R$ 50,00',
-        minValue: 50
-    }
 };
 

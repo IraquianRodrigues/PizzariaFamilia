@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CartStats as CartStatsType } from '@/hooks/useCart';
+import { CartStats as CartStatsType } from '@/hooks/cartContext';
 import { TrendingUp, Package, DollarSign, Clock } from 'lucide-react';
 
 interface CartStatsProps {

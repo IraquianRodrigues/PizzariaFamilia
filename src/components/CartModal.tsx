@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '../hooks/cartContext';
 import { pizzas as traditionalPizzas, specialPizzas, plusSpecialPizzas, sweetPizzas } from '@/data/pizzas';
-import { Trash2, Plus, Minus, X, ShoppingCart, MapPin, CreditCard, Wallet, ChevronDown, Copy, Check, AlertTriangle } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingCart, MapPin, CreditCard, Wallet, ChevronDown, Copy, Check, AlertTriangle } from 'lucide-react';
+import { CartItem } from '@/types';
 
 interface CartModalProps {
     isOpen: boolean;
@@ -110,7 +111,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             await navigator.clipboard.writeText(PIX_KEY);
             setPixCopied(true);
             setTimeout(() => setPixCopied(false), 2000);
-        } catch (_) {
+        } catch {
             // ignore
         }
     };
@@ -140,8 +141,6 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             return;
         }
 
-        // Mensagem simples (ASCII) para evitar caracteres inválidos
-        const useSimpleFormatting = true;
         const allPizzaNames = [
             ...traditionalPizzas,
             ...specialPizzas,
@@ -161,7 +160,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             return name;
         };
 
-        const itemsBlock = cart.map((item: any) => {
+        const itemsBlock = cart.map((item: CartItem) => {
             const lineTotal = formatBRL(item.quantity * item.price);
             const label = formatItemName(item.name);
             return `- ${label} x${item.quantity} - ${lineTotal}`;
@@ -225,7 +224,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
                     deliveryFee: deliveryType === 'entrega' ? deliveryFee : 0,
                     referencePoint,
                     total: finalTotal,
-                    items: cart.map((i: any) => ({ name: i.name, quantity: i.quantity, price: i.price, totalPrice: i.price * i.quantity })),
+                    items: cart.map((i: CartItem) => ({ name: i.name, quantity: i.quantity, price: i.price, totalPrice: i.price * i.quantity })),
                     message: whatsappMessage,
                     paymentMethod,
                     changeNeeded,
@@ -289,7 +288,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
 
                 {/* Itens do carrinho */}
                 <div className="space-y-4">
-                    {cart.map((item: any) => (
+                    {cart.map((item: CartItem) => (
                         <div key={item.name} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg">{item.name}</h3>
@@ -351,7 +350,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
                         ].map(opt => (
                             <button
                                 key={opt.id}
-                                onClick={() => setDeliveryType(opt.id as any)}
+                                onClick={() => setDeliveryType(opt.id as 'entrega' | 'retirada')}
                                 className={`border rounded-lg py-2 text-sm font-medium transition ${deliveryType === opt.id ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white hover:border-emerald-300'}`}
                             >
                                 {opt.label}
@@ -377,7 +376,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
                         ].map(opt => (
                             <button
                                 key={opt.id}
-                                onClick={() => setPaymentMethod(opt.id as any)}
+                                onClick={() => setPaymentMethod(opt.id as 'pix' | 'credito' | 'debito' | 'dinheiro')}
                                 className={`border rounded-lg py-2 text-sm font-medium transition ${paymentMethod === opt.id ? 'bg-green-600 text-white border-green-600' : 'bg-white hover:border-green-300'}`}
                             >
                                 {opt.label}

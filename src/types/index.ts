@@ -21,15 +21,7 @@ export interface CartItem {
     totalPrice: number;
 }
 
-export interface Coupon {
-    name: string;
-    discount: number;
-    type: 'percentage';
-    category: 'burgers' | 'drinks' | 'all';
-    description: string;
-    oneTime?: boolean;
-    minValue?: number;
-}
+// Coupon types removed (feature disabled)
 
 // Ratings removed
 
