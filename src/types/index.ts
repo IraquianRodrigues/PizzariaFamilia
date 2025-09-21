@@ -5,7 +5,7 @@ export interface Product {
     name: string;
     price: number; // preço base (para pizzas usar o menor tamanho)
     description: string;
-    category: 'burger' | 'drink' | 'pizza';
+    category: 'burger' | 'drink' | 'pizza' | 'dish';
     image: string;
     weight?: string;
     tags: string[];
@@ -25,7 +25,7 @@ export interface CartItem {
 
 // Ratings removed
 
-export type FilterType = 'all' | 'favorites' | 'burgers' | 'drinks' | 'pizzas' | 'pizzas-especiais' | 'pizzas-plus-especiais' | 'pizzas-doces';
+export type FilterType = 'all' | 'favorites' | 'burgers' | 'drinks' | 'massas' | 'pizzas' | 'pizzas-especiais' | 'pizzas-plus-especiais' | 'pizzas-doces';
 export type SortType = 'default' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
 
 // NOVOS TIPOS PARA ADICIONAIS

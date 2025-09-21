@@ -94,6 +94,18 @@ export const products: Product[] = [
     { id: 'h2oh-limoneto', name: 'H2OH Limoneto', price: 7.00, description: 'Bebida H2OH sabor limão', category: 'drink', image: '/assets/h20.png', tags: ['🥤 Bebida'] },
     { id: 'agua-gas', name: 'Água Mineral com Gás', price: 3.50, description: 'Água mineral gaseificada', category: 'drink', image: '/assets/gas.jpg', tags: ['🥤 Bebida', 'Água'] },
     { id: 'agua-500', name: 'Água Mineral 500ml', price: 2.50, description: 'Garrafa de água mineral 500ml', category: 'drink', image: '/assets/mineral.jpg', tags: ['🥤 Bebida', 'Água'] },
+    // Massas: Lasanhas e Parmegianas
+    { id: 'lasanha-carne-m', name: 'Lasanha de Carne (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/lasanha carne.png', tags: ['🍝 Massa', 'Lasanha'] },
+    { id: 'lasanha-carne-g', name: 'Lasanha de Carne (G)', price: 50.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/lasanha carne.png', tags: ['🍝 Massa', 'Lasanha'] },
+    { id: 'lasanha-frango-m', name: 'Lasanha de Frango (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/lasanha frango.png', tags: ['🍝 Massa', 'Lasanha'] },
+    { id: 'lasanha-frango-g', name: 'Lasanha de Frango (G)', price: 50.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/lasanha frango.png', tags: ['🍝 Massa', 'Lasanha'] },
+    // Parmegianas (Filé e Frango) - P/M/G
+    { id: 'parmegiana-file-p', name: 'Filé à Parmegiana (P)', price: 25.00, description: 'Porção individual', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
+        { id: 'parmegiana-file-m', name: 'Filé à Parmegiana (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
+        { id: 'parmegiana-file-g', name: 'Filé à Parmegiana (G)', price: 55.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
+    { id: 'parmegiana-frango-p', name: 'Frango à Parmegiana (P)', price: 25.00, description: 'Porção individual', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Frango'] },
+    { id: 'parmegiana-frango-m', name: 'Frango à Parmegiana (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Frango'] },
+    { id: 'parmegiana-frango-g', name: 'Frango à Parmegiana (G)', price: 50.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Frango'] },
     // pizzas tradicionais e especiais
     ...pizzas,
     ...specialPizzas,

@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { ToastContainer } from '@/components/ui/toast';
 
 export default function HomePage() {
+  const ENABLE_BURGERS = (process.env.NEXT_PUBLIC_ENABLE_BURGERS ?? 'true') !== 'false';
   const { addToCart, getCartCount } = useCart();
   const { favorites, toggleFavorite } = useFavorites();
   const { success, error, info, warning, toasts, removeToast } = useToast();
@@ -61,12 +62,17 @@ export default function HomePage() {
     if (currentFilter === 'favorites') list = list.filter(p => favorites.includes(p.name));
     else if (currentFilter === 'burgers') list = list.filter(p => p.category === 'burger');
     else if (currentFilter === 'drinks') list = list.filter(p => p.category === 'drink');
+    else if (currentFilter === 'massas') list = list.filter(p => p.category === 'dish');
     else if (currentFilter === 'pizzas') list = list.filter(p => p.category === 'pizza' && !p.tags.includes('⭐ Especial'));
     else if (currentFilter === 'pizzas-especiais') list = list.filter(p => p.category === 'pizza' && p.tags.includes('⭐ Especial') && !p.tags.includes('🔥 Plus'));
     else if (currentFilter === 'pizzas-plus-especiais') list = list.filter(p => p.category === 'pizza' && p.tags.includes('🔥 Plus'));
   else if (currentFilter === 'pizzas-doces') list = list.filter(p => p.category === 'pizza' && p.tags.includes('🍫 Doce'));
+    // Se lanches estiverem desativados, remover categoria burger de qualquer lista
+    if (!ENABLE_BURGERS) {
+      list = list.filter(p => p.category !== 'burger');
+    }
     return list;
-  }, [currentFilter, favorites]);
+  }, [currentFilter, favorites, ENABLE_BURGERS]);
 
   // (Estatísticas removidas a pedido do usuário)
 
@@ -152,7 +158,12 @@ export default function HomePage() {
         )}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5 sticky top-0 z-30 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 py-2">
           <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
-      {(['all', 'favorites', 'burgers', 'drinks', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[]).map(ft => (
+      {(
+        (ENABLE_BURGERS
+          ? (['all', 'favorites', 'burgers', 'drinks', 'massas', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[])
+          : (['all', 'favorites', 'drinks', 'massas', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[])
+        )
+      ).map(ft => (
               <Button
                 key={ft}
                 size="sm"
@@ -164,6 +175,7 @@ export default function HomePage() {
                 {ft === 'favorites' && 'Favoritos'}
                 {ft === 'burgers' && 'Lanches'}
                 {ft === 'drinks' && 'Bebidas'}
+                {ft === 'massas' && 'Lasanhas e Parmegianas'}
                 {ft === 'pizzas' && 'Pizzas Tradicionais'}
                 {ft === 'pizzas-especiais' && 'Pizzas Especiais'}
                 {ft === 'pizzas-plus-especiais' && 'Pizzas + Especiais'}
@@ -176,7 +188,7 @@ export default function HomePage() {
         <Separator className="my-3" />
 
         {currentFilter !== 'pizzas-especiais' && currentFilter !== 'pizzas-plus-especiais' && currentFilter !== 'pizzas-doces' && (
-          currentFilter === 'burgers' ? (
+          (currentFilter === 'burgers' && ENABLE_BURGERS) ? (
             <div className="space-y-10">
               {/* Lanches comuns */}
               <div>
@@ -257,6 +269,35 @@ export default function HomePage() {
                 <h2 className="text-xl font-bold mb-4">Bebidas</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
                   {filteredProducts.filter(p => !p.tags.includes('Suco') && !p.tags.includes('Vitamina')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : currentFilter === 'massas' ? (
+            <div className="space-y-10">
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Lasanhas</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Lasanha')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Parmegianas</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Parmegiana')).map(prod => (
                     <ProductCard
                       key={prod.id}
                       product={prod}
