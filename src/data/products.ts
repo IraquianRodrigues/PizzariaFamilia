@@ -101,8 +101,8 @@ export const products: Product[] = [
     { id: 'lasanha-frango-g', name: 'Lasanha de Frango (G)', price: 50.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/lasanha frango.png', tags: ['🍝 Massa', 'Lasanha'] },
     // Parmegianas (Filé e Frango) - P/M/G
     { id: 'parmegiana-file-p', name: 'Filé à Parmegiana (P)', price: 25.00, description: 'Porção individual', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
-        { id: 'parmegiana-file-m', name: 'Filé à Parmegiana (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
-        { id: 'parmegiana-file-g', name: 'Filé à Parmegiana (G)', price: 55.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
+    { id: 'parmegiana-file-m', name: 'Filé à Parmegiana (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
+    { id: 'parmegiana-file-g', name: 'Filé à Parmegiana (G)', price: 55.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Filé'] },
     { id: 'parmegiana-frango-p', name: 'Frango à Parmegiana (P)', price: 25.00, description: 'Porção individual', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Frango'] },
     { id: 'parmegiana-frango-m', name: 'Frango à Parmegiana (M)', price: 40.00, description: 'Serve até 2 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Frango'] },
     { id: 'parmegiana-frango-g', name: 'Frango à Parmegiana (G)', price: 50.00, description: 'Serve até 3 pessoas', category: 'dish', image: '/assets/file parmegiana.png', tags: ['🍝 Massa', 'Parmegiana', 'Frango'] },

@@ -104,9 +104,16 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                 {/* Preço e botões */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="text-left">
-                        <p className="font-bold text-xl sm:text-2xl text-green-600">
-                            {formatBRL(product.price)}
-                        </p>
+                        {product.category === 'pizza' ? (
+                            <div className="leading-tight">
+                                <span className="text-xs text-gray-500 mr-1">A partir de</span>
+                                <span className="font-bold text-xl sm:text-2xl text-green-600">{formatBRL(product.price)}</span>
+                            </div>
+                        ) : (
+                            <p className="font-bold text-xl sm:text-2xl text-green-600">
+                                {formatBRL(product.price)}
+                            </p>
+                        )}
                     </div>
 
                     <div className="flex gap-2 flex-wrap sm:flex-nowrap">
@@ -123,17 +130,18 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                                 Personalizar
                             </Button>
                         )}
-
-                        {/* Botão de Adicionar ao Carrinho */}
-                        <Button
-                            aria-label={`Adicionar ${product.name} ao carrinho`}
-                            onClick={handleAddToCart}
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 text-xs px-3 py-1.5 whitespace-nowrap"
-                            size="sm"
-                        >
-                            <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
-                            Adicionar
-                        </Button>
+                        {/* Botão de Adicionar ao Carrinho (oculto para pizzas) */}
+                        {product.category !== 'pizza' && (
+                            <Button
+                                aria-label={`Adicionar ${product.name} ao carrinho`}
+                                onClick={handleAddToCart}
+                                className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 text-xs px-3 py-1.5 whitespace-nowrap"
+                                size="sm"
+                            >
+                                <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
+                                Adicionar
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>
