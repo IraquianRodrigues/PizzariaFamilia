@@ -46,6 +46,7 @@ model User {
   password  String?  // para credenciais locais (hash)
   role      UserRole @default(CUSTOMER)
   orders    Order[]
+  actedLogs AuditLog[]        @relation("UserActorLogs")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -86,6 +87,7 @@ model OrderItem {
   quantity     Int     @default(1)
   lineTotal    Float
   category     String? // pizza, drink, burger, etc (snapshot)
+  pizzaConfigs PizzaConfig[]
   // Para itens de pizza multi-sabor podemos deixar uma ligação via PizzaConfig
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -111,7 +113,7 @@ model AuditLog {
   orderId    String
   order      Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
   actorId    String?
-  actor      User?       @relation(fields: [actorId], references: [id])
+  actor      User?       @relation("UserActorLogs", fields: [actorId], references: [id])
   action     String      // e.g. STATUS_CHANGE, CREATE, CANCEL
   oldStatus  OrderStatus?
   newStatus  OrderStatus?
