@@ -25,8 +25,7 @@ export const createOrderSchema = z.object({
   changeFor: z.number().nullable().optional(),
   items: z.array(orderItemSchema).min(1),
   pizzaConfigs: z.array(pizzaConfigSchema).optional(),
-  discount: z.number().min(0).default(0).optional(),
-  couponCode: z.string().optional()
+  discount: z.number().min(0).default(0).optional()
 });
 
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
