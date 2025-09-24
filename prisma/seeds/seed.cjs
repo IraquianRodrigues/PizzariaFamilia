@@ -1,5 +1,6 @@
-const { prisma } = require('../../src/lib/prisma');
+const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const prisma = new PrismaClient();
 
 async function main() {
   const adminPhone = '+5584990000000';
