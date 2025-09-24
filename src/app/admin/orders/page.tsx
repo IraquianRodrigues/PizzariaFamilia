@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
           <tbody>
             {data?.data?.map((o: OrderListItem) => (
               <tr key={o.id} className="border-t">
-                <td className="p-2 font-mono text-xs">{o.code}</td>
+                <td className="p-2 font-mono text-xs text-blue-600 underline cursor-pointer" onClick={()=>window.location.href=`/admin/orders/${o.id}`}>{o.code}</td>
                 <td className="p-2 font-medium">{o.customerName}</td>
                 <td className="p-2">{o.customerPhone}</td>
                 <td className="p-2">{o._count.items}</td>

@@ -31,7 +31,8 @@ export const createOrderSchema = z.object({
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 
 export const updateStatusSchema = z.object({
-  status: z.enum(['PENDING','CONFIRMED','PREPARING','OUT_FOR_DELIVERY','DELIVERED','CANCELED'])
-});
+  status: z.enum(['PENDING','CONFIRMED','PREPARING','OUT_FOR_DELIVERY','DELIVERED','CANCELED']).optional(),
+  paymentStatus: z.enum(['UNPAID','PAID','REFUNDED','PARTIAL']).optional()
+}).refine(d => d.status || d.paymentStatus, { message: 'É necessário ao menos status ou paymentStatus' });
 
 export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;

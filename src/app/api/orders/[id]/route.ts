@@ -33,20 +33,37 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const existing = await prisma.order.findUnique({ where: { id: params.id } });
     if (!existing) return NextResponse.json({ error: 'Pedido não encontrado' }, { status: 404 });
+
+    const { status, paymentStatus } = parsed.data;
     const updated = await prisma.$transaction(async (tx) => {
-      const up = await tx.order.update({ where: { id: params.id }, data: { status: parsed.data.status } });
-      await tx.auditLog.create({
-        data: {
-          orderId: params.id,
-          action: 'STATUS_CHANGE',
-          oldStatus: existing.status,
-          newStatus: parsed.data.status
-        }
-      });
+      const up = await tx.order.update({ where: { id: params.id }, data: {
+        ...(status ? { status } : {}),
+        ...(paymentStatus ? { paymentStatus } : {})
+      } });
+
+      if (status) {
+        await tx.auditLog.create({
+          data: {
+            orderId: params.id,
+            action: 'STATUS_CHANGE',
+            oldStatus: existing.status,
+            newStatus: status
+          }
+        });
+      }
+      if (paymentStatus && paymentStatus !== existing.paymentStatus) {
+        await tx.auditLog.create({
+          data: {
+            orderId: params.id,
+            action: 'PAYMENT_STATUS_CHANGE',
+            metadata: { old: existing.paymentStatus, new: paymentStatus }
+          }
+        });
+      }
       return up;
     });
-    return NextResponse.json({ data: { id: updated.id, status: updated.status } });
+    return NextResponse.json({ data: { id: updated.id, status: updated.status, paymentStatus: updated.paymentStatus } });
   } catch (e:any) {
-    return NextResponse.json({ error: 'Erro ao atualizar status', details: e.message }, { status: 500 });
+    return NextResponse.json({ error: 'Erro ao atualizar', details: e.message }, { status: 500 });
   }
 }
