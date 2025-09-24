@@ -1,0 +1,136 @@
+// Prisma schema inicial para dashboard de pedidos
+// Ajustável antes da primeira migração
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELED
+}
+
+enum PaymentMethod {
+  CASH
+  PIX
+  CARD
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  PARTIAL
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?  @unique
+  email     String?  @unique
+  password  String?  // para credenciais locais (hash)
+  role      UserRole @default(CUSTOMER)
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  code            Int           @default(autoincrement()) @unique // Número sequencial amigável
+  customerName    String
+  customerPhone   String
+  deliveryAddress String?
+  notes           String?       // Observações do cliente
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(UNPAID)
+  changeFor       Float?        // Troco se for dinheiro
+  subtotal        Float
+  discount        Float         @default(0)
+  total           Float
+  status          OrderStatus   @default(PENDING)
+  items           OrderItem[]
+  configs         PizzaConfig[]
+  createdById     String? // se inserido internamente
+  createdBy       User?    @relation(fields: [createdById], references: [id])
+  auditLogs       AuditLog[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  // índices comuns para filtros
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerPhone])
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName  String  // snapshot do nome do produto
+  basePrice    Float
+  quantity     Int     @default(1)
+  lineTotal    Float
+  category     String? // pizza, drink, burger, etc (snapshot)
+  // Para itens de pizza multi-sabor podemos deixar uma ligação via PizzaConfig
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@index([orderId])
+}
+
+model PizzaConfig {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderItemId  String?  // caso queiramos associar a um item específico
+  orderItem    OrderItem? @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  size         String   // pequena, media, grande, extra_grande
+  flavors      Json     // array de ids de sabores
+  extras       Json?    // array de extras
+  promoApplied Boolean  @default(false)
+  finalPrice   Float
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  orderId    String
+  order      Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  actorId    String?
+  actor      User?       @relation(fields: [actorId], references: [id])
+  action     String      // e.g. STATUS_CHANGE, CREATE, CANCEL
+  oldStatus  OrderStatus?
+  newStatus  OrderStatus?
+  metadata   Json?
+  createdAt  DateTime    @default(now())
+  @@index([orderId])
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+  discountType String  // PERCENT or VALUE
+  value       Float
+  maxUses     Int?     // limite total
+  usedCount   Int      @default(0)
+  startsAt    DateTime? 
+  expiresAt   DateTime? 
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
