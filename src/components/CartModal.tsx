@@ -274,7 +274,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             onClose();
             // Redirecionar para dashboard de pedidos
             router.push('/admin/orders');
-        } catch (e: any) {
+        } catch (e: unknown) {
             console.error('Erro inesperado ao criar pedido', e);
             setFormStatus({ message: 'Falha inesperada ao criar pedido.', type: 'error' });
         } finally {

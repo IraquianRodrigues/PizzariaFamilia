@@ -1,11 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createOrderSchema } from '@/lib/orders/validation';
+import { Prisma } from '@prisma/client';
 
 // GET /api/orders?status=...  (lista)
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const status = searchParams.get('status') as any | null;
+  const status = searchParams.get('status') as
+    | 'PENDING'
+    | 'CONFIRMED'
+    | 'PREPARING'
+    | 'OUT_FOR_DELIVERY'
+    | 'DELIVERED'
+    | 'CANCELED'
+    | null;
   const where = status ? { status } : undefined;
   try {
     const orders = await prisma.order.findMany({
@@ -25,13 +33,14 @@ export async function GET(req: NextRequest) {
       }
     });
     return NextResponse.json({ data: orders });
-  } catch (e:any) {
-    return NextResponse.json({ error: 'Erro ao listar pedidos', details: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'Unknown error';
+    return NextResponse.json({ error: 'Erro ao listar pedidos', details: msg }, { status: 500 });
   }
 }
 
 // POST /api/orders  (criar)
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   console.log('[API /api/orders] POST received');
   const json = await req.json().catch(() => null);
   if (!json) return NextResponse.json({ error: 'JSON inválido' }, { status: 400 });
@@ -86,8 +95,8 @@ export async function POST(req: NextRequest) {
           data: data.pizzaConfigs.map(pc => ({
             orderId: order.id,
             size: pc.size,
-            flavors: pc.flavors as any,
-            extras: pc.extras as any,
+            flavors: pc.flavors as unknown as Prisma.InputJsonValue,
+            extras: (pc.extras ? (pc.extras as unknown as Prisma.InputJsonValue) : Prisma.JsonNull),
             promoApplied: pc.promoApplied ?? false,
             finalPrice: pc.finalPrice
           }))
@@ -107,8 +116,9 @@ export async function POST(req: NextRequest) {
 
     console.log('[API /api/orders] Order created id/code:', created.id, created.code);
     return NextResponse.json({ data: { id: created.id, code: created.code } }, { status: 201 });
-  } catch (e:any) {
+  } catch (e: unknown) {
     console.error('[API /api/orders] Error creating order', e);
-    return NextResponse.json({ error: 'Erro ao criar pedido', details: e.message }, { status: 500 });
+    const msg = e instanceof Error ? e.message : 'Unknown error';
+    return NextResponse.json({ error: 'Erro ao criar pedido', details: msg }, { status: 500 });
   }
 }

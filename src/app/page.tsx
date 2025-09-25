@@ -291,7 +291,7 @@ export default function HomePage() {
                     />
                   ))}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">Toque em "Personalizar" para escolher: Doces (Chocolate, Dois amores) • Salgados (Calabresa, Calabresa c/ Catupiry, Frango Mussarela, Frango c/ Catupiry, Carne de Sol, Carne c/ Catupiry, Mista). Preço único R$ 8,00.</p>
+                <p className="text-xs text-gray-500 mt-2">Toque em &quot;Personalizar&quot; para escolher: Doces (Chocolate, Dois amores) • Salgados (Calabresa, Calabresa c/ Catupiry, Frango Mussarela, Frango c/ Catupiry, Carne de Sol, Carne c/ Catupiry, Mista). Preço único R$ 8,00.</p>
               </div>
               {/* Artesanais */}
               <div>

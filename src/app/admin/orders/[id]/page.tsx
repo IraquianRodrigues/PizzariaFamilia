@@ -15,13 +15,33 @@ const statusLabels: Record<string,string> = {
 
 export default function OrderDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { data, mutate, isLoading } = useSWR<{ data: any }>(`/api/orders/${id}`, fetcher, { refreshInterval: 8000 });
+  type OrderItemDTO = { id: string; productName: string; basePrice: number; quantity: number; lineTotal: number; category?: string | null };
+  type PizzaExtraDTO = { id: string; price?: number };
+  type PizzaConfigDTO = { id: string; size: string; flavors: string[]; extras?: PizzaExtraDTO[] | null; promoApplied?: boolean; finalPrice: number };
+  type AuditLogDTO = { id: string; action: 'STATUS_CHANGE' | 'CREATE' | 'PAYMENT_STATUS_CHANGE'; createdAt: string; oldStatus?: string | null; newStatus?: string | null; metadata?: Record<string, unknown> | null };
+  type OrderDetailDTO = {
+    code: number;
+    customerName: string;
+    customerPhone: string;
+    deliveryAddress?: string | null;
+    notes?: string | null;
+    paymentStatus: 'UNPAID'|'PAID'|'REFUNDED'|'PARTIAL';
+    paymentMethod: 'CASH'|'PIX'|'CARD';
+    changeFor?: number | null;
+    total: number; subtotal: number; discount: number;
+    status: 'PENDING'|'CONFIRMED'|'PREPARING'|'OUT_FOR_DELIVERY'|'DELIVERED'|'CANCELED';
+    items: OrderItemDTO[];
+    configs: PizzaConfigDTO[];
+    auditLogs: AuditLogDTO[];
+    createdAt: string;
+  };
+  const { data, mutate, isLoading } = useSWR<{ data: OrderDetailDTO }>(`/api/orders/${id}`, fetcher, { refreshInterval: 8000 });
   const router = useRouter();
   const [updating, setUpdating] = useState(false);
 
   const order = data?.data;
 
-  async function update(payload: any) {
+  async function update(payload: { status?: typeof statusOptions[number]; paymentStatus?: typeof paymentOptions[number] }) {
     setUpdating(true);
     await fetch(`/api/orders/${id}`, { method: 'PATCH', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(payload) });
     mutate();
@@ -48,11 +68,11 @@ export default function OrderDetailsPage() {
         </div>
         <div className="p-4 rounded border bg-white space-y-3">
           <h2 className="font-semibold text-sm">Status</h2>
-          <select disabled={updating} value={order.status} onChange={e=>update({ status: e.target.value })} className="w-full border rounded px-2 py-1 text-sm">
+          <select disabled={updating} value={order.status} onChange={e=>update({ status: e.target.value as typeof statusOptions[number] })} className="w-full border rounded px-2 py-1 text-sm">
             {statusOptions.map(s => <option key={s} value={s}>{statusLabels[s]}</option>)}
           </select>
           <h2 className="font-semibold text-sm">Pagamento</h2>
-          <select disabled={updating} value={order.paymentStatus} onChange={e=>update({ paymentStatus: e.target.value })} className="w-full border rounded px-2 py-1 text-sm">
+          <select disabled={updating} value={order.paymentStatus} onChange={e=>update({ paymentStatus: e.target.value as typeof paymentOptions[number] })} className="w-full border rounded px-2 py-1 text-sm">
             {paymentOptions.map(p => <option key={p} value={p}>{p}</option>)}
           </select>
           <p className="text-xs text-gray-600">Método: {order.paymentMethod}</p>
@@ -71,7 +91,7 @@ export default function OrderDetailsPage() {
       <div className="p-4 rounded border bg-white">
         <h2 className="font-semibold text-sm mb-2">Itens ({order.items.length})</h2>
         <ul className="divide-y text-sm">
-          {order.items.map((it: any) => (
+          {order.items.map((it) => (
             <li key={it.id} className="py-2 flex items-center justify-between">
               <div>
                 <p className="font-medium">{it.productName} {it.category && <span className="text-[10px] text-gray-500">[{it.category}]</span>}</p>
@@ -87,11 +107,11 @@ export default function OrderDetailsPage() {
         <div className="p-4 rounded border bg-white">
           <h2 className="font-semibold text-sm mb-2">Configurações de Pizza ({order.configs.length})</h2>
           <ul className="divide-y text-sm">
-            {order.configs.map((cfg: any) => (
+            {order.configs.map((cfg) => (
               <li key={cfg.id} className="py-2">
                 <p className="font-medium">Tamanho: {cfg.size} {cfg.promoApplied && <span className="text-[10px] text-green-600">(Promo)</span>}</p>
                 <p className="text-[11px] text-gray-500">Sabores: {cfg.flavors.join(', ')}</p>
-                {cfg.extras?.length && <p className="text-[11px] text-gray-500">Extras: {cfg.extras.map((e:any)=>e.id).join(', ')}</p>}
+                {cfg.extras?.length && <p className="text-[11px] text-gray-500">Extras: {cfg.extras.map((e)=>e.id).join(', ')}</p>}
                 <p className="text-[11px] text-gray-600">Preço Config: R$ {cfg.finalPrice.toFixed(2)}</p>
               </li>
             ))}
@@ -102,7 +122,7 @@ export default function OrderDetailsPage() {
       <div className="p-4 rounded border bg-white">
         <h2 className="font-semibold text-sm mb-2">Histórico</h2>
         <ul className="text-xs space-y-1">
-          {order.auditLogs.map((log: any) => (
+          {order.auditLogs.map((log) => (
             <li key={log.id} className="flex gap-2">
               <span className="text-gray-500 font-mono">{format(new Date(log.createdAt), 'HH:mm')}</span>
               <span>

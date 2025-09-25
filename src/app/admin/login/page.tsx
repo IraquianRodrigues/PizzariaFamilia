@@ -1,8 +1,8 @@
 "use client";
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -43,5 +43,13 @@ export default function LoginPage() {
         <p className="text-[11px] text-center text-gray-500">Acesso restrito. Contate o administrador.</p>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Carregando...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
