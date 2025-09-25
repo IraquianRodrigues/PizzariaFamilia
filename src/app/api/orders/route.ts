@@ -32,10 +32,13 @@ export async function GET(req: NextRequest) {
 
 // POST /api/orders  (criar)
 export async function POST(req: NextRequest) {
+  console.log('[API /api/orders] POST received');
   const json = await req.json().catch(() => null);
   if (!json) return NextResponse.json({ error: 'JSON inválido' }, { status: 400 });
+  console.log('[API /api/orders] Payload raw:', json);
   const parse = createOrderSchema.safeParse(json);
   if (!parse.success) {
+    console.warn('[API /api/orders] Zod validation failed');
     return NextResponse.json({ error: 'Dados inválidos', issues: parse.error.format() }, { status: 422 });
   }
   const data = parse.data;
@@ -47,6 +50,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const created = await prisma.$transaction(async (tx) => {
+      console.log('[API /api/orders] Creating order in transaction');
       const order = await tx.order.create({
         data: {
           customerName: data.customerName,
@@ -101,8 +105,10 @@ export async function POST(req: NextRequest) {
       return order;
     });
 
+    console.log('[API /api/orders] Order created id/code:', created.id, created.code);
     return NextResponse.json({ data: { id: created.id, code: created.code } }, { status: 201 });
   } catch (e:any) {
+    console.error('[API /api/orders] Error creating order', e);
     return NextResponse.json({ error: 'Erro ao criar pedido', details: e.message }, { status: 500 });
   }
 }

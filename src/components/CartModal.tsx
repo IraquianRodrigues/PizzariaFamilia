@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { formatBRL } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ interface CartModalProps {
 }
 
 export function CartModal({ isOpen, onClose }: CartModalProps) {
+    const router = useRouter();
     // Número do WhatsApp do estabelecimento (E.164 sem '+') e chave PIX (configuráveis via env)
     const WHATSAPP_PHONE = (process.env.NEXT_PUBLIC_WHATSAPP_PHONE as string | undefined) || '5584998169843';
     const PIX_KEY = (process.env.NEXT_PUBLIC_PIX_KEY as string | undefined) || WHATSAPP_PHONE;
@@ -53,6 +55,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
     const [changeNeeded, setChangeNeeded] = useState(false);
     const [changeFor, setChangeFor] = useState('');
     const [pixCopied, setPixCopied] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const subtotal = getCartTotal();
     const finalTotal = subtotal + (deliveryType === 'entrega' ? deliveryFee : 0); // inclui taxa de entrega apenas quando for entrega
@@ -117,7 +120,7 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
     };
 
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         if (cart.length === 0) return;
 
         if (!customerName.trim() || !customerPhone.trim() || !isValidPhone || (deliveryType === 'entrega' && (!address.trim() || !selectedNeighborhood))) {
@@ -210,42 +213,73 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             obrigadoIcon
         ].join('\n');
 
-        // Enviar para API interna (notificação servidor / WhatsApp Cloud API)
+        // Montar payload compatível com /api/orders (novo backend)
+        const paymentMethodMap: Record<string, 'CASH' | 'PIX' | 'CARD'> = {
+            dinheiro: 'CASH',
+            pix: 'PIX',
+            credito: 'CARD',
+            debito: 'CARD'
+        };
+
+        const deliveryAddress = deliveryType === 'entrega'
+            ? `${address}${selectedNeighborhood ? ' - ' + selectedNeighborhood : ''}${referencePoint ? ' (Ref: ' + referencePoint + ')' : ''}`
+            : 'Retirada no balcão';
+
+        const changeForNumber = paymentMethod === 'dinheiro' && changeNeeded && changeFor
+            ? parseFloat(changeFor.replace(',', '.'))
+            : undefined;
+
+        const orderPayload = {
+            customerName: customerName.trim(),
+            customerPhone: customerPhone.trim(),
+            deliveryAddress: deliveryType === 'entrega' ? deliveryAddress : undefined,
+            notes: whatsappMessage, // aproveitamos a mensagem como observação completa
+            paymentMethod: paymentMethodMap[paymentMethod],
+            changeFor: changeForNumber,
+            items: cart.map((i: CartItem) => ({
+                productName: i.name,
+                basePrice: i.price,
+                quantity: i.quantity,
+                category: undefined
+            })),
+            discount: 0
+        };
+
+        setIsSubmitting(true);
         try {
-            fetch('/api/order', {
+            const res = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    customerName,
-                    customerPhone,
-                    address,
-                    deliveryType,
-                    neighborhood: deliveryType === 'entrega' ? selectedNeighborhood : undefined,
-                    deliveryFee: deliveryType === 'entrega' ? deliveryFee : 0,
-                    referencePoint,
-                    total: finalTotal,
-                    items: cart.map((i: CartItem) => ({ name: i.name, quantity: i.quantity, price: i.price, totalPrice: i.price * i.quantity })),
-                    message: whatsappMessage,
-                    paymentMethod,
-                    changeNeeded,
-                    changeFor: paymentMethod === 'dinheiro' && changeNeeded ? changeFor : undefined,
-                })
-            }).catch(err => console.error('Falha ao notificar servidor', err));
-        } catch (e) {
-            console.error('Erro inesperado ao enviar pedido para API', e);
+                body: JSON.stringify(orderPayload)
+            });
+
+            if (!res.ok) {
+                const errJson = await res.json().catch(() => ({}));
+                setFormStatus({ message: 'Erro ao registrar pedido: ' + (errJson.error || res.statusText), type: 'error' });
+                setIsSubmitting(false);
+                return;
+            }
+
+            // Abre WhatsApp para envio manual ainda (fluxo existente)
+            window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+
+            clearCart();
+            setAddress('');
+            setSelectedNeighborhood('');
+            setDeliveryFee(0);
+            setCustomerName('');
+            setCustomerPhone('');
+            setReferencePoint('');
+            setFormStatus({ message: 'Pedido enviado com sucesso!', type: 'success' });
+            onClose();
+            // Redirecionar para dashboard de pedidos
+            router.push('/admin/orders');
+        } catch (e: any) {
+            console.error('Erro inesperado ao criar pedido', e);
+            setFormStatus({ message: 'Falha inesperada ao criar pedido.', type: 'error' });
+        } finally {
+            setIsSubmitting(false);
         }
-
-    
-        window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-
-        clearCart();
-        setAddress('');
-        setSelectedNeighborhood('');
-        setDeliveryFee(0);
-        setCustomerName('');
-        setCustomerPhone('');
-        setReferencePoint('');
-    onClose();
     };
 
     const handleQuantityChange = (name: string, newQuantity: number) => {
@@ -561,12 +595,13 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
                         onClick={handleCheckout}
                         className="flex-1 bg-green-600 hover:bg-green-700"
                         disabled={
+                            isSubmitting ||
                             !customerName.trim() || !customerPhone.trim() || !isValidPhone ||
                             (deliveryType === 'entrega' && (!address.trim() || !selectedNeighborhood))
                         }
                     >
                         <CreditCard className="w-4 h-4 mr-2" />
-                        Finalizar Pedido
+                        {isSubmitting ? 'Enviando...' : 'Finalizar Pedido'}
                     </Button>
                 </div>
                 {formStatus && (

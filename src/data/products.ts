@@ -38,7 +38,7 @@ export const products: Product[] = [
     {
         id: 'coca',
         name: 'Coca-Cola Lata',
-        price: 6.50,
+        price: 6.00,
         description: 'Refrigerante Coca-Cola em lata 350ml.',
         category: 'drink',
         image: '/assets/refri-1.png',
