@@ -20,6 +20,38 @@ export const products: Product[] = [
     { id: 'completo-caseiro', name: 'Completo Caseiro', price: 15.00, description: 'Pão Bola, Hambúrguer Caseiro 130g, Presunto, Queijo e Ovo', category: 'burger', image: '/assets/hamb-7.png', tags: ['🥪 Lanche'] },
     { id: 'x-lombo', name: 'X-Lombo', price: 16.00, description: 'Pão Bola, Lombo Bovino e Queijo', category: 'burger', image: '/assets/hamb-8.png', tags: ['🥪 Lanche'] },
     { id: 'cachorro-quente', name: 'Cachorro Quente', price: 9.00, description: 'Carne Moída, Salsicha, Salada, Milho e Molho Parmesão', category: 'burger', image: '/assets/dog.jpg', tags: ['🥪 Lanche', 'Hot Dog'] },
+    // Tapiocas (seção separada em Lanches)
+    { id: 'tapioca-frango-catupiry', name: 'Tapioca Frango com Catupiry', price: 13.00, description: 'Tapioca recheada com frango e catupiry', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-frango-mussarela', name: 'Tapioca Frango com Mussarela', price: 12.00, description: 'Tapioca recheada com frango e mussarela', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-carne-sol', name: 'Tapioca Carne de Sol', price: 14.00, description: 'Tapioca recheada com carne de sol', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-calabresa', name: 'Tapioca Calabresa', price: 12.00, description: 'Tapioca recheada com calabresa', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-queijo-coalho', name: 'Tapioca Queijo Coalho', price: 10.00, description: 'Tapioca com queijo coalho', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-queijo-presunto', name: 'Tapioca Queijo Presunto', price: 10.00, description: 'Tapioca com queijo e presunto', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-tradicional', name: 'Tapioca Tradicional na Manteiga', price: 5.00, description: 'Tapioca tradicional na manteiga', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    { id: 'tapioca-a-moda', name: 'Tapioca à Moda', price: 15.00, description: 'Frango, bacon, calabresa, presunto e mussarela', category: 'burger', image: '/assets/tapioca.png', tags: ['🥪 Lanche', 'Tapioca'] },
+    // Cuscuz (seção separada em Lanches)
+    { id: 'cuscuz-frango', name: 'Cuscuz Frango', price: 14.00, description: 'Frango, catupiry, mussarela e molho', category: 'burger', image: '/assets/cuscuz.png', tags: ['🥪 Lanche', 'Cuscuz'] },
+    { id: 'cuscuz-calabresa', name: 'Cuscuz Calabresa', price: 12.50, description: 'Calabresa, presunto, mussarela e molho', category: 'burger', image: '/assets/cuscuz.png', tags: ['🥪 Lanche', 'Cuscuz'] },
+    { id: 'cuscuz-hamburguer', name: 'Cuscuz Hambúrguer', price: 11.00, description: 'Hambúrguer, mussarela, ovo e molho', category: 'burger', image: '/assets/cuscuz.png', tags: ['🥪 Lanche', 'Cuscuz'] },
+    { id: 'cuscuz-misto', name: 'Cuscuz Misto', price: 12.00, description: 'Presunto, mussarela, catupiry e molho', category: 'burger', image: '/assets/cuscuz.png', tags: ['🥪 Lanche', 'Cuscuz'] },
+    { id: 'cuscuz-carne-sol', name: 'Cuscuz Carne de Sol', price: 15.00, description: 'Carne de sol, mussarela, catupiry e molho', category: 'burger', image: '/assets/cuscuz.png', tags: ['🥪 Lanche', 'Cuscuz'] },
+    { id: 'cuscuz-a-moda', name: 'Cuscuz à Moda', price: 15.00, description: 'Frango, presunto, bacon, mussarela e molho', category: 'burger', image: '/assets/cuscuz.png', tags: ['🥪 Lanche', 'Cuscuz'] },
+    // Pastéis (seção separada em Lanches)
+    { id: 'pastel-frango', name: 'Pastel de Frango', price: 15.00, description: 'Frango desfiado, milho e mussarela', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-pizza', name: 'Pastel de Pizza', price: 15.00, description: 'Mussarela, presunto, orégano, tomate e cebola', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-a-moda', name: 'Pastel à Moda', price: 20.00, description: 'Frango, filé, bacon, calabresa, mussarela e presunto', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-queijo', name: 'Pastel de Queijo', price: 15.00, description: 'Mussarela ou queijo coalho', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-carne-sol-calabresa', name: 'Pastel Carne de Sol com Calabresa', price: 19.00, description: 'Carne de sol, calabresa e queijo', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-carne-sol', name: 'Pastel Carne de Sol', price: 18.00, description: 'Carne de sol e queijo', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-frango-catupiry', name: 'Pastel Frango com Catupiry', price: 17.00, description: 'Frango, queijo e catupiry', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-calabresa', name: 'Pastel de Calabresa', price: 15.00, description: 'Calabresa e mussarela', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-calafrango', name: 'Pastel Calafrango', price: 17.00, description: 'Frango, calabresa e mussarela', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel'] },
+    { id: 'pastel-chocolate', name: 'Pastel de Chocolate', price: 18.00, description: 'Chocolate, creme de leite e mussarela', category: 'burger', image: '/assets/pastel.png', tags: ['🥪 Lanche', 'Pastel', 'Doce'] },
+    // Esfirras (apenas 1 card, seleção por modal)
+    { id: 'esfirras', name: 'Esfirras', price: 8.00, description: 'Escolha entre sabores doces e salgados ao personalizar', category: 'burger', image: '/assets/esfirra.png', tags: ['🥪 Lanche', 'Esfirra'] },
+    // Porções (nova seção fora de Lanches)
+    { id: 'batata-frita', name: 'Batata Frita', price: 10.00, description: 'Escolha o tamanho ao personalizar: P (150g) ou G (300g)', category: 'dish', image: '/assets/fritas.png', tags: ['🍟 Porções', 'Porção'] },
+    { id: 'batata-cheddar-bacon', name: 'Batata c/ Cheddar e Bacon', price: 14.00, description: 'Escolha o tamanho ao personalizar: P (150g) ou G (300g)', category: 'dish', image: '/assets/fritas.png', tags: ['🍟 Porções', 'Porção'] },
     // Lanches adicionais (segunda imagem)
     { id: 'x-bacon-lombo', name: 'X-Bacon Lombo', price: 17.00, description: 'Pão Bola, Lombo Bovino, Bacon e Queijo', category: 'burger', image: '/assets/hamb-2.png', tags: ['🥪 Lanche', 'Lombo'] },
     { id: 'lombo-especial', name: 'Lombo Especial', price: 22.00, description: 'Pão Bola, Lombo Bovino, Queijo, Bacon, Presunto e Ovos', category: 'burger', image: '/assets/hamb-3.png', tags: ['🥪 Lanche', 'Lombo', 'Especial'] },

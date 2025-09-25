@@ -8,6 +8,8 @@ import { ProductCard } from '@/components/ProductCard';
 import { CartModal } from '@/components/CartModal';
 import { CustomizationModal } from '@/components/CustomizationModal';
 import { PizzaCustomizationModal } from '@/components/PizzaCustomizationModal';
+import { EsfirraCustomizationModal } from '@/components/EsfirraCustomizationModal';
+import { PortionCustomizationModal } from '@/components/PortionCustomizationModal';
 import { useCart } from '@/hooks/cartContext';
 import { ShoppingCart } from 'lucide-react';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -53,6 +55,8 @@ export default function HomePage() {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isCustomizationModalOpen, setIsCustomizationModalOpen] = useState(false);
   const [currentCustomizationProduct, setCurrentCustomizationProduct] = useState<Product | null>(null);
+  const [isEsfirraModalOpen, setIsEsfirraModalOpen] = useState(false);
+  const [isPortionModalOpen, setIsPortionModalOpen] = useState(false);
 
   // Promoção Terça a Quinta para pizzas tradicionais G
   const isTueToThuPromo = (() => { const d = new Date().getDay(); return d >= 2 && d <= 4; })();
@@ -83,7 +87,15 @@ export default function HomePage() {
 
   const handleCustomizeClick = (product: Product) => {
     setCurrentCustomizationProduct(product);
-    setIsCustomizationModalOpen(true);
+    if (product.tags.includes('Esfirra')) {
+      setIsEsfirraModalOpen(true);
+    } else if (product.tags.includes('Porção')) {
+      setIsPortionModalOpen(true);
+    } else if (product.category === 'pizza') {
+      setIsCustomizationModalOpen(true);
+    } else {
+      setIsCustomizationModalOpen(true);
+    }
   };
 
   return (
@@ -194,7 +206,7 @@ export default function HomePage() {
               <div>
                 <h2 className="text-xl font-bold mb-4">Lanches</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
-                  {filteredProducts.filter(p => !p.tags.includes('Artesanal') && !p.tags.includes('Trio')).map(prod => (
+                  {filteredProducts.filter(p => !p.tags.includes('Artesanal') && !p.tags.includes('Trio') && !p.tags.includes('Tapioca') && !p.tags.includes('Cuscuz') && !p.tags.includes('Pastel') && !p.tags.includes('Esfirra')).map(prod => (
                     <ProductCard
                       key={prod.id}
                       product={prod}
@@ -204,6 +216,80 @@ export default function HomePage() {
                     />
                   ))}
                 </div>
+              </div>
+              {/* Tapiocas */}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Tapiocas</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Tapioca')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Cuscuz */}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Cuscuz</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Cuscuz')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Pastéis */}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Pastéis</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Pastel')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Porções */}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Porções</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Porção')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Esfirras (um card) */}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Esfirras</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {filteredProducts.filter(p => p.tags.includes('Esfirra')).map(prod => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      onCustomizeClick={handleCustomizeClick}
+                      onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Toque em "Personalizar" para escolher: Doces (Chocolate, Dois amores) • Salgados (Calabresa, Calabresa c/ Catupiry, Frango Mussarela, Frango c/ Catupiry, Carne de Sol, Carne c/ Catupiry, Mista). Preço único R$ 8,00.</p>
               </div>
               {/* Artesanais */}
               <div>
@@ -424,6 +510,34 @@ export default function HomePage() {
             addToCart(name, total);
             success('Pizza adicionada!', `${name} foi adicionada ao carrinho`);
             setIsCustomizationModalOpen(false);
+            setCurrentCustomizationProduct(null);
+          }}
+        />
+      )}
+
+      {currentCustomizationProduct && currentCustomizationProduct.tags.includes('Esfirra') && (
+        <EsfirraCustomizationModal
+          isOpen={isEsfirraModalOpen}
+          onClose={() => { setIsEsfirraModalOpen(false); setCurrentCustomizationProduct(null); }}
+          product={currentCustomizationProduct}
+          onAddToCart={(name, total) => {
+            addToCart(name, total);
+            success('Esfirra adicionada!', `${name} foi adicionada ao carrinho`);
+            setIsEsfirraModalOpen(false);
+            setCurrentCustomizationProduct(null);
+          }}
+        />
+      )}
+
+      {currentCustomizationProduct && currentCustomizationProduct.tags.includes('Porção') && (
+        <PortionCustomizationModal
+          isOpen={isPortionModalOpen}
+          onClose={() => { setIsPortionModalOpen(false); setCurrentCustomizationProduct(null); }}
+          product={currentCustomizationProduct}
+          onAddToCart={(name, total) => {
+            addToCart(name, total);
+            success('Adicionado!', `${name} foi adicionado ao carrinho`);
+            setIsPortionModalOpen(false);
             setCurrentCustomizationProduct(null);
           }}
         />
