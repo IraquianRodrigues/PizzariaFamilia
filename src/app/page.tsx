@@ -67,6 +67,7 @@ export default function HomePage() {
     else if (currentFilter === 'burgers') list = list.filter(p => p.category === 'burger');
     else if (currentFilter === 'drinks') list = list.filter(p => p.category === 'drink');
     else if (currentFilter === 'massas') list = list.filter(p => p.category === 'dish');
+    else if (currentFilter === 'porcoes') list = list.filter(p => p.tags.includes('Porção'));
     else if (currentFilter === 'pizzas') list = list.filter(p => p.category === 'pizza' && !p.tags.includes('⭐ Especial'));
     else if (currentFilter === 'pizzas-especiais') list = list.filter(p => p.category === 'pizza' && p.tags.includes('⭐ Especial') && !p.tags.includes('🔥 Plus'));
     else if (currentFilter === 'pizzas-plus-especiais') list = list.filter(p => p.category === 'pizza' && p.tags.includes('🔥 Plus'));
@@ -172,8 +173,8 @@ export default function HomePage() {
           <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
       {(
         (ENABLE_BURGERS
-          ? (['all', 'favorites', 'burgers', 'drinks', 'massas', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[])
-          : (['all', 'favorites', 'drinks', 'massas', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[])
+          ? (['all', 'favorites', 'burgers', 'drinks', 'massas', 'porcoes', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[])
+          : (['all', 'favorites', 'drinks', 'massas', 'porcoes', 'pizzas', 'pizzas-especiais', 'pizzas-plus-especiais', 'pizzas-doces'] as FilterType[])
         )
       ).map(ft => (
               <Button
@@ -188,6 +189,7 @@ export default function HomePage() {
                 {ft === 'burgers' && 'Lanches'}
                 {ft === 'drinks' && 'Bebidas'}
                 {ft === 'massas' && 'Lasanhas e Parmegianas'}
+                {ft === 'porcoes' && 'Porções'}
                 {ft === 'pizzas' && 'Pizzas Tradicionais'}
                 {ft === 'pizzas-especiais' && 'Pizzas Especiais'}
                 {ft === 'pizzas-plus-especiais' && 'Pizzas + Especiais'}
@@ -392,6 +394,20 @@ export default function HomePage() {
                     />
                   ))}
                 </div>
+              </div>
+            </div>
+          ) : currentFilter === 'porcoes' ? (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Porções</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                {filteredProducts.map(prod => (
+                  <ProductCard
+                    key={prod.id}
+                    product={prod}
+                    onCustomizeClick={handleCustomizeClick}
+                    onAddToCart={(name, price) => { addToCart(name, price); success('Adicionado!', `${name} foi adicionado ao carrinho`); }}
+                  />
+                ))}
               </div>
             </div>
           ) : (
