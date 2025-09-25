@@ -117,8 +117,8 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                     </div>
 
                     <div className="flex gap-2 flex-wrap sm:flex-nowrap">
-                        {/* Botão de Personalização (apenas para pizzas) */}
-                        {product.category === 'pizza' && onCustomizeClick && (
+                        {/* Botão de Personalização (pizzas e itens que pedem escolha, ex.: Esfirra, Porção) */}
+                        {(product.category === 'pizza' || product.tags.includes('Esfirra') || product.tags.includes('Porção')) && onCustomizeClick && (
                             <Button
                                 aria-label={`Personalizar ${product.name}`}
                                 onClick={handleCustomizeClick}
@@ -130,8 +130,8 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                                 Personalizar
                             </Button>
                         )}
-                        {/* Botão de Adicionar ao Carrinho (oculto para pizzas) */}
-                        {product.category !== 'pizza' && (
+                        {/* Botão de Adicionar ao Carrinho (oculto para pizzas, esfirra e porções, pois precisam personalizar) */}
+                        {product.category !== 'pizza' && !product.tags.includes('Esfirra') && !product.tags.includes('Porção') && (
                             <Button
                                 aria-label={`Adicionar ${product.name} ao carrinho`}
                                 onClick={handleAddToCart}

@@ -25,7 +25,7 @@ export interface CartItem {
 
 // Ratings removed
 
-export type FilterType = 'all' | 'favorites' | 'burgers' | 'drinks' | 'massas' | 'pizzas' | 'pizzas-especiais' | 'pizzas-plus-especiais' | 'pizzas-doces';
+export type FilterType = 'all' | 'favorites' | 'burgers' | 'drinks' | 'massas' | 'porcoes' | 'pizzas' | 'pizzas-especiais' | 'pizzas-plus-especiais' | 'pizzas-doces';
 export type SortType = 'default' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
 
 // NOVOS TIPOS PARA ADICIONAIS
