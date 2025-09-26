@@ -1,28 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
 
-const PROTECTED_PREFIX = '/admin';
-
+// Desativa todo o painel /admin redirecionando para a home
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname.startsWith(PROTECTED_PREFIX)) {
-    const token = req.cookies.get('auth_token')?.value;
-    if (!token) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/admin/login';
-      url.searchParams.set('next', pathname);
-      return NextResponse.redirect(url);
-    }
-    const payload = verifyToken(token);
-    if (!payload || (payload.role !== 'ADMIN' && payload.role !== 'STAFF')) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/admin/login';
-      return NextResponse.redirect(url);
-    }
+  if (pathname.startsWith('/admin')) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/';
+    url.searchParams.delete('next');
+    return NextResponse.redirect(url);
   }
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: ['/admin/:path*']
-};
+export const config = { matcher: ['/admin/:path*'] };

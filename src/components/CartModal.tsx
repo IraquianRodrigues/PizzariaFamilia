@@ -213,54 +213,30 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             obrigadoIcon
         ].join('\n');
 
-        // Montar payload compatível com /api/orders (novo backend)
-        const paymentMethodMap: Record<string, 'CASH' | 'PIX' | 'CARD'> = {
-            dinheiro: 'CASH',
-            pix: 'PIX',
-            credito: 'CARD',
-            debito: 'CARD'
-        };
-
-        const deliveryAddress = deliveryType === 'entrega'
-            ? `${address}${selectedNeighborhood ? ' - ' + selectedNeighborhood : ''}${referencePoint ? ' (Ref: ' + referencePoint + ')' : ''}`
-            : 'Retirada no balcão';
-
-        const changeForNumber = paymentMethod === 'dinheiro' && changeNeeded && changeFor
-            ? parseFloat(changeFor.replace(',', '.'))
-            : undefined;
-
-        const orderPayload = {
-            customerName: customerName.trim(),
-            customerPhone: customerPhone.trim(),
-            deliveryAddress: deliveryType === 'entrega' ? deliveryAddress : undefined,
-            notes: whatsappMessage, // aproveitamos a mensagem como observação completa
-            paymentMethod: paymentMethodMap[paymentMethod],
-            changeFor: changeForNumber,
-            items: cart.map((i: CartItem) => ({
-                productName: i.name,
-                basePrice: i.price,
-                quantity: i.quantity,
-                category: undefined
-            })),
-            discount: 0
-        };
-
+        // Envia sempre para WhatsApp (sem salvar no painel)
         setIsSubmitting(true);
         try {
-            const res = await fetch('/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderPayload)
-            });
-
-            if (!res.ok) {
-                const errJson = await res.json().catch(() => ({}));
-                setFormStatus({ message: 'Erro ao registrar pedido: ' + (errJson.error || res.statusText), type: 'error' });
+            const waPayload = {
+                customerName: customerName.trim(),
+                customerPhone: customerPhone.trim(),
+                address: deliveryType === 'entrega' ? address : 'Retirada no balcão',
+                neighborhood: deliveryType === 'entrega' ? selectedNeighborhood : undefined,
+                deliveryFee: deliveryType === 'entrega' ? deliveryFee : 0,
+                total: finalTotal,
+                items: cart.map((i: CartItem) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+                message: whatsappMessage,
+                paymentMethod: paymentMethod === 'dinheiro' ? 'CASH' : paymentMethod === 'pix' ? 'PIX' : 'CARD',
+                changeNeeded: paymentMethod === 'dinheiro' ? changeNeeded : undefined,
+                changeFor: paymentMethod === 'dinheiro' && changeNeeded && changeFor ? changeFor : undefined,
+            };
+            const waRes = await fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(waPayload) });
+            if (!waRes.ok) {
+                const errJson = await waRes.json().catch(() => ({} as any));
+                setFormStatus({ message: 'Erro ao enviar pedido para WhatsApp: ' + (errJson.error || waRes.statusText), type: 'error' });
                 setIsSubmitting(false);
                 return;
             }
 
-            // Abre WhatsApp para envio manual ainda (fluxo existente)
             window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
 
             clearCart();
@@ -270,13 +246,11 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             setCustomerName('');
             setCustomerPhone('');
             setReferencePoint('');
-            setFormStatus({ message: 'Pedido enviado com sucesso!', type: 'success' });
+            setFormStatus({ message: 'Pedido enviado via WhatsApp!', type: 'success' });
             onClose();
-            // Redirecionar para dashboard de pedidos
-            router.push('/admin/orders');
         } catch (e: unknown) {
-            console.error('Erro inesperado ao criar pedido', e);
-            setFormStatus({ message: 'Falha inesperada ao criar pedido.', type: 'error' });
+            console.error('Erro ao enviar pedido para WhatsApp', e);
+            setFormStatus({ message: 'Falha inesperada ao enviar pedido para WhatsApp.', type: 'error' });
         } finally {
             setIsSubmitting(false);
         }

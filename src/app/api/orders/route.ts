@@ -42,13 +42,17 @@ export async function GET(req: Request) {
 // POST /api/orders  (criar)
 export async function POST(req: Request) {
   console.log('[API /api/orders] POST received');
+  if (!process.env.DATABASE_URL) {
+    console.error('[API /api/orders] Missing DATABASE_URL environment variable');
+    return NextResponse.json({ error: 'database_url_missing', details: 'A variável de ambiente DATABASE_URL não está definida.' }, { status: 500 });
+  }
   const json = await req.json().catch(() => null);
   if (!json) return NextResponse.json({ error: 'JSON inválido' }, { status: 400 });
   console.log('[API /api/orders] Payload raw:', json);
   const parse = createOrderSchema.safeParse(json);
   if (!parse.success) {
     console.warn('[API /api/orders] Zod validation failed');
-    return NextResponse.json({ error: 'Dados inválidos', issues: parse.error.format() }, { status: 422 });
+    return NextResponse.json({ error: 'Dados inválidos', details: parse.error.format() }, { status: 422 });
   }
   const data = parse.data;
 
@@ -118,6 +122,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ data: { id: created.id, code: created.code } }, { status: 201 });
   } catch (e: unknown) {
     console.error('[API /api/orders] Error creating order', e);
+    if (e && typeof e === 'object') {
+      // Prisma initialization/connection errors
+      if (e instanceof Prisma.PrismaClientInitializationError) {
+        return NextResponse.json({ error: 'db_init_error', details: e.message }, { status: 500 });
+      }
+      // Known Prisma errors (e.g., P1001 cannot connect)
+      const anyE = e as any;
+      const code = anyE?.code as string | undefined;
+      if (code && typeof code === 'string') {
+        return NextResponse.json({ error: `prisma_${code.toLowerCase()}`, details: anyE.message }, { status: 500 });
+      }
+    }
     const msg = e instanceof Error ? e.message : 'Unknown error';
     return NextResponse.json({ error: 'Erro ao criar pedido', details: msg }, { status: 500 });
   }
