@@ -18,6 +18,7 @@ import { FilterType } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ToastContainer } from '@/components/ui/toast';
+import PromoSextaCard from '@/components/PromoSextaCard';
 
 export default function HomePage() {
   const ENABLE_BURGERS = (process.env.NEXT_PUBLIC_ENABLE_BURGERS ?? 'true') !== 'false';
@@ -160,6 +161,8 @@ export default function HomePage() {
       </header>
 
       <main id="menu" className="max-w-7xl mx-auto px-4 mt-6">
+        {/* Promo Sexta-Feira (exibido somente às sextas) */}
+        <PromoSextaCard />
         {isTueToThuPromo && (
           <div className="mb-4 rounded-xl border border-green-200 bg-green-50 text-green-800 p-3 text-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <div>

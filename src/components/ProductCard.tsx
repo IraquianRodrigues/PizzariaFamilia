@@ -27,8 +27,8 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
         product.category === 'pizza'
             ? '/assets/logo.jpeg' // evita mostrar hambúrguer em pizza
             : product.category === 'drink'
-            ? '/assets/refri-2.png'
-            : '/assets/logo nova.png'; // neutro para evitar hambúrguer em itens como Cuscuz/Tapioca/Pastel
+                ? '/assets/refri-2.png'
+                : '/assets/logo nova.png'; // neutro para evitar hambúrguer em itens como Cuscuz/Tapioca/Pastel
 
     const handleAddToCart = () => {
         onAddToCart(product.name, product.price);
