@@ -211,7 +211,15 @@ export default function HomePage() {
               <div>
                 <h2 className="text-xl font-bold mb-4">Lanches</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
-                  {filteredProducts.filter(p => !p.tags.includes('Artesanal') && !p.tags.includes('Trio') && !p.tags.includes('Tapioca') && !p.tags.includes('Cuscuz') && !p.tags.includes('Pastel') && !p.tags.includes('Esfirra')).map(prod => (
+                  {filteredProducts
+                    .filter(p => !p.tags.includes('Artesanal') && !p.tags.includes('Trio') && !p.tags.includes('Tapioca') && !p.tags.includes('Cuscuz') && !p.tags.includes('Pastel') && !p.tags.includes('Esfirra'))
+                    .sort((a, b) => {
+                      const aPromo = a.tags.includes('Promoção') ? 1 : 0;
+                      const bPromo = b.tags.includes('Promoção') ? 1 : 0;
+                      if (aPromo !== bPromo) return bPromo - aPromo; // Promoção primeiro
+                      return 0;
+                    })
+                    .map(prod => (
                     <ProductCard
                       key={prod.id}
                       product={prod}

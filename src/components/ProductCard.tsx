@@ -69,7 +69,16 @@ export function ProductCard({ product, onCustomizeClick, onAddToCart, onShowToas
                 {/* Overlay com tags */}
                 <div className="absolute top-2 left-2 flex flex-wrap gap-1 pointer-events-none">
                     {product.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs bg-white/90 text-gray-700 border-0">
+                        <Badge
+                            key={index}
+                            variant="secondary"
+                            className={
+                                `text-xs border-0 ` +
+                                (tag === 'Promoção'
+                                    ? 'bg-rose-600 text-white shadow-sm'
+                                    : 'bg-white/90 text-gray-700')
+                            }
+                        >
                             {tag}
                         </Badge>
                     ))}
