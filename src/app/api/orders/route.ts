@@ -128,10 +128,13 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'db_init_error', details: e.message }, { status: 500 });
       }
       // Known Prisma errors (e.g., P1001 cannot connect)
-      const anyE = e as any;
-      const code = anyE?.code as string | undefined;
-      if (code && typeof code === 'string') {
-        return NextResponse.json({ error: `prisma_${code.toLowerCase()}`, details: anyE.message }, { status: 500 });
+      if ('code' in (e as Record<string, unknown>)) {
+        const rawCode = (e as Record<string, unknown>)['code'];
+        const code = typeof rawCode === 'string' ? rawCode : undefined;
+        if (code) {
+          const details = e instanceof Error ? e.message : String(rawCode);
+          return NextResponse.json({ error: `prisma_${code.toLowerCase()}`, details }, { status: 500 });
+        }
       }
     }
     const msg = e instanceof Error ? e.message : 'Unknown error';

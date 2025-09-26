@@ -18,11 +18,12 @@ export function useToast() {
 
         setToasts(prev => [...prev, newToast]);
 
-        // Auto-remove after duration
+        // Auto-remove after duration without depending on removeToast
         if (duration !== 0) {
+            const timeout = duration || 4000;
             setTimeout(() => {
-                removeToast(id);
-            }, duration || 4000);
+                setToasts(prev => prev.filter(t => t.id !== id));
+            }, timeout);
         }
     }, []);
 

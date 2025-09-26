@@ -53,7 +53,7 @@ export function Toast({ toast, onRemove }: ToastProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -50, scale: 0.9 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`relative flex items-start gap-3 p-4 rounded-lg shadow-lg border-l-4 ${toastColors[toast.type]} text-white min-w-[320px] max-w-[400px]`}
+            className={`relative flex items-start gap-3 p-4 rounded-lg shadow-lg border-l-4 ${toastColors[toast.type]} text-white min-w-[320px] max-w-[400px] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
         >
             <Icon className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div className="flex-1 min-w-0">

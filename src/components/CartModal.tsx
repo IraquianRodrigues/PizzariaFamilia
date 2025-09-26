@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { formatBRL } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,6 @@ interface CartModalProps {
 }
 
 export function CartModal({ isOpen, onClose }: CartModalProps) {
-    const router = useRouter();
     // Número do WhatsApp do estabelecimento (E.164 sem '+') e chave PIX (configuráveis via env)
     const WHATSAPP_PHONE = (process.env.NEXT_PUBLIC_WHATSAPP_PHONE as string | undefined) || '5584998169843';
     const PIX_KEY = (process.env.NEXT_PUBLIC_PIX_KEY as string | undefined) || WHATSAPP_PHONE;
@@ -231,8 +229,20 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
             };
             const waRes = await fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(waPayload) });
             if (!waRes.ok) {
-                const errJson = await waRes.json().catch(() => ({} as any));
-                setFormStatus({ message: 'Erro ao enviar pedido para WhatsApp: ' + (errJson.error || waRes.statusText), type: 'error' });
+                let errJson: unknown = {};
+                try {
+                    errJson = await waRes.json();
+                } catch {
+                    errJson = {};
+                }
+                let errMessage = waRes.statusText;
+                if (typeof errJson === 'object' && errJson !== null && 'error' in errJson) {
+                    const val = (errJson as Record<string, unknown>).error;
+                    if (typeof val === 'string') {
+                        errMessage = val;
+                    }
+                }
+                setFormStatus({ message: 'Erro ao enviar pedido para WhatsApp: ' + errMessage, type: 'error' });
                 setIsSubmitting(false);
                 return;
             }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { products } from '@/data/products';
 import { Product } from '@/types';
@@ -23,8 +23,8 @@ import PromoSextaCard from '@/components/PromoSextaCard';
 export default function HomePage() {
   const ENABLE_BURGERS = (process.env.NEXT_PUBLIC_ENABLE_BURGERS ?? 'true') !== 'false';
   const { addToCart, getCartCount } = useCart();
-  const { favorites, toggleFavorite } = useFavorites();
-  const { success, error, info, warning, toasts, removeToast } = useToast();
+  const { favorites } = useFavorites();
+  const { success, toasts, removeToast } = useToast();
 
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
   // Horário de funcionamento (exemplo: 18:00 - 23:30)
@@ -32,19 +32,16 @@ export default function HomePage() {
   const OPEN_HOUR = 18; // 18h
   const CLOSE_HOUR = 23; // Fecha às 23:00 (não inclui 23:00)
   const [isOpenNow, setIsOpenNow] = useState(false);
-  const [nowString, setNowString] = useState('');
 
   useEffect(() => {
     const update = () => {
       const now = new Date();
       const hours = now.getHours();
-      const minutes = now.getMinutes(); // pode usar no futuro para pré-abertura
       const day = now.getDay(); // 0=Dom 1=Seg 2=Ter ... 6=Sáb
       const isOpenDay = day !== 1; // fechado somente na segunda-feira
       const withinHours = hours >= OPEN_HOUR && hours < CLOSE_HOUR; // 18:00 <= hora < 23:00
       const open = isOpenDay && withinHours;
       setIsOpenNow(open);
-      setNowString(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     };
     update();
     const id = setInterval(update, 60 * 1000);
@@ -82,10 +79,7 @@ export default function HomePage() {
 
   // (Estatísticas removidas a pedido do usuário)
 
-  const handleScrollToMenu = useCallback(() => {
-    const el = document.getElementById('menu');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  }, []);
+  // scroll helper removido (não utilizado)
 
   const handleCustomizeClick = (product: Product) => {
     setCurrentCustomizationProduct(product);
