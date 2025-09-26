@@ -6,6 +6,8 @@ export const products: Product[] = [
     { id: 'completo', name: 'Completo', price: 10.00, description: 'Pão Bola, Hambúrguer, Presunto, Salsicha, Ovo e Queijo', category: 'burger', image: '/assets/hamb-1.png', tags: ['🥪 Lanche'] },
     { id: 'x-bacon-calabresa', name: 'X-Bacon Calabresa', price: 12.00, description: 'Pão Bola, Calabresa, Bacon, Presunto e Queijo', category: 'burger', image: '/assets/hamb-2.png', tags: ['🥪 Lanche'] },
     { id: 'x-calabresa', name: 'X-Calabresa', price: 10.00, description: 'Pão Bola, Calabresa, Presunto e Queijo', category: 'burger', image: '/assets/hamb-3.png', tags: ['🥪 Lanche'] },
+    // Promo Lanches
+    { id: 'promo-3-sanduiches', name: '3 Sanduíches - Promoção', price: 24.00, description: 'Combo promocional com 3 sanduíches', category: 'burger', image: '/assets/promo.jpeg', tags: ['🥪 Lanche', 'Promoção'] },
     { id: 'calabresa-especial-lanche', name: 'Calabresa Especial', price: 15.00, description: 'Pão Bola, Calabresa, Presunto, Bacon, Ovo, Queijo e Catupiry', category: 'burger', image: '/assets/hamb-4.png', tags: ['🥪 Lanche', 'Especial'] },
     { id: 'frango-catupiry-lanche', name: 'Frango Catupiry', price: 13.00, description: 'Pão Bola, Frango e Catupiry', category: 'burger', image: '/assets/hamb-5.png', tags: ['🥪 Lanche', 'Frango'] },
     { id: 'x-frango', name: 'X-Frango', price: 13.00, description: 'Pão Bola, Frango, Presunto e Queijo', category: 'burger', image: '/assets/hamb-6.png', tags: ['🥪 Lanche', 'Frango'] },
